@@ -112,6 +112,19 @@ def main():
     # Gurobi Agent: Enable logging and MIPFocus=1
     model.setParam('LogFile', 'gurobi.log')
     model.setParam('MIPFocus', 1)
+    
+    # Set branching hints: prioritize hubs with highest total potential demand
+    hub_potential = {}
+    for h in hubs:
+        total_potential = sum(demand[s][p] * feasibility[s][h][p] 
+                            for s in junctions for p in pois)
+        hub_potential[h] = total_potential
+    
+    # Sort hubs by potential and set branching hints
+    sorted_hubs = sorted(hub_potential.keys(), key=lambda h: hub_potential[h], reverse=True)
+    for h in sorted_hubs[:max_new_hubs + num_existing_hubs]:
+        y[h].BranchPriority = 100
+    
     model.optimize()
     solve_time = time.time() - start_time
 
