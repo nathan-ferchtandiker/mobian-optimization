@@ -98,12 +98,6 @@ def main():
             model.addConstr(gp.quicksum(x[s, h, p] for h in hubs if (s, h, p) in x) <= 1,
                            name=f"single_assignment_{s}_{p}")
 
-    # Symmetry breaking: Prefer lower-numbered new hubs
-    sorted_new_hubs = sorted(new_hubs, key=lambda h: int(h[1:]))
-    for i in range(len(sorted_new_hubs) - 1):
-        model.addConstr(y[sorted_new_hubs[i]] >= y[sorted_new_hubs[i+1]],
-                       name=f"symmetry_break_{i}")
-
     print(f"      Variables: {model.NumVars:,}")
     print(f"      Constraints: {model.NumConstrs:,}")
     print(f"      Binary variables: {model.NumBinVars:,}")
