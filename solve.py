@@ -91,7 +91,7 @@ def main():
         for h in hubs:
             for p in pois:
                 model.addConstr(x[s, h, p] <= feasibility[s][h][p],
-                               name=f"feasibility_{s}_{h}_{p}")
+                               name=f"feasibility_{s}_{h}_{p}").Lazy = 1
 
     # Constraint 5: Each demand from s to p can be assigned to at most one hub
     for s in junctions:
